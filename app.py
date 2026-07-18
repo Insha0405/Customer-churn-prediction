@@ -82,7 +82,6 @@ total = st.number_input(
     value=1000.0,
     help="Total amount paid by the customer so far."
 )
-"Total Charges",18.25,9000.0,1000.0)
 if st.button("🔍 Predict Customer Churn", use_container_width=True):
 
     input_data = pd.DataFrame(0,index=[0],columns=feature_names)
