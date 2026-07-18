@@ -6,27 +6,84 @@ import joblib
 model = joblib.load("customer_churn_model.pkl")
 feature_names = joblib.load("feature_names.pkl")
 
-st.set_page_config(page_title="Customer Churn Prediction")
+st.set_page_config(
+    page_title="AI Customer Churn Predictor",
+    page_icon="📊",
+    layout="wide"
+)
 
-st.title("📊 AI-Powered Customer Churn Prediction")
+st.title("📊 AI-Powered Customer Churn Prediction System")
 
-st.write("Enter customer details below to predict whether the customer is likely to churn.")
+st.markdown("""
+Welcome to the **AI-Powered Customer Churn Prediction System**.
 
-gender = st.selectbox("Gender", ["Male", "Female"])
+This application predicts whether a telecom customer is likely to **leave (churn)** or **stay** with the company based on customer profile and billing information.
 
-senior = st.selectbox("Senior Citizen", [0,1])
+### 📌 What is Customer Churn?
 
-partner = st.selectbox("Partner", ["Yes","No"])
+Customer churn refers to customers who discontinue a company's service. Predicting churn helps businesses retain valuable customers through proactive engagement.
+""")
 
-dependents = st.selectbox("Dependents", ["Yes","No"])
+st.divider()
 
-tenure = st.slider("Tenure (Months)",1,72,12)
+st.subheader("Customer Details")
 
-monthly = st.number_input("Monthly Charges",18.25,120.0,70.0)
+st.subheader("👤 Customer Information")
 
-total = st.number_input("Total Charges",18.25,9000.0,1000.0)
+gender = st.selectbox(
+    "Gender",
+    ["Male", "Female"],
+    help="Select the customer's gender."
+)
 
-if st.button("Predict Churn"):
+senior = st.selectbox(
+    "Senior Citizen",
+    [0,1],
+    format_func=lambda x: "Yes" if x==1 else "No",
+    help="Is the customer 65 years or older?"
+)
+
+partner = st.selectbox(
+    "Has a Partner?",
+    ["Yes","No"],
+    help="Whether the customer has a spouse or partner."
+)
+
+dependents = st.selectbox(
+    "Has Dependents?",
+    ["Yes","No"],
+    help="Whether the customer has children or other dependents."
+)
+
+st.divider()
+
+st.subheader("💳 Billing Information")
+
+tenure = st.slider(
+    "Customer Tenure (Months)",
+    1,
+    72,
+    12,
+    help="Number of months the customer has been with the company."
+)
+
+monthly = st.number_input(
+    "Monthly Charges ($)",
+    min_value=18.25,
+    max_value=120.0,
+    value=70.0,
+    help="Average monthly bill paid by the customer."
+)
+
+total = st.number_input(
+    "Total Charges ($)",
+    min_value=18.25,
+    max_value=9000.0,
+    value=1000.0,
+    help="Total amount paid by the customer so far."
+)
+"Total Charges",18.25,9000.0,1000.0)
+if st.button("🔍 Predict Customer Churn", use_container_width=True):
 
     input_data = pd.DataFrame(0,index=[0],columns=feature_names)
 
@@ -46,8 +103,28 @@ if st.button("Predict Churn"):
 
     prediction = model.predict(input_data)
 
-    if prediction[0]==1:
-        st.error("⚠️ Customer is likely to Churn.")
-    else:
-        st.success("✅ Customer is likely to Stay.")
-        
+    st.divider()
+
+st.subheader("📈 Prediction Result")
+
+if prediction[0] == 1:
+    st.error("⚠️ High Risk of Customer Churn")
+
+    st.markdown("""
+### Recommended Business Actions
+
+- 📞 Contact the customer with a personalized retention offer.
+- 💰 Provide discounts or loyalty rewards.
+- 📄 Recommend switching to a long-term contract.
+- 🤝 Schedule a customer success follow-up.
+""")
+
+else:
+    st.success("✅ Customer is Likely to Stay")
+
+    st.markdown("""
+### Recommendation
+
+- 😊 Continue providing quality service.
+- 🎁 Offer loyalty benefits to strengthen customer satisfaction.
+""")        
